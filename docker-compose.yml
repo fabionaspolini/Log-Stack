@@ -15,23 +15,21 @@ services:
       RABBITMQ_DEFAULT_VHOST: Enterprise Log
   
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.0
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.5.0
     environment: 
       ES_JAVA_OPTS: -Xms512m -Xmx512m
-      #xpack.security.enabled: "true"
-      #ELASTIC_USERNAME: elastic
-      #ELASTIC_PASSWORD: changeme
-      cluster.name: "elastic_stack_logging"
+
+      cluster.name: elastic_stack_logging
       discovery.type: single-node
       discovery.zen.minimum_master_nodes: 1
-      http.cors.allow-origin: "*"
+      node.name: elastic_stack_logging_data"
+
       http.cors.enabled: "true"
+      http.cors.allow-origin: "*"
       http.host: 0.0.0.0
-      network.host: 0.0.0.0
-      node.name: "elastic_stack_logging_data"      
-      transport.host: 127.0.0.1
-      xpack.license.self_generated.type: trial      
-      xpack.monitoring.collection.enabled: "true"
+      network.host: 0.0.0.0      
+      transport.host: 127.0.0.1      
+      #xpack.monitoring.collection.enabled: "true"      
     volumes: 
       - elasticsearch_data:/usr/share/elasticsearch/data      
     ports:
@@ -46,14 +44,12 @@ services:
       - log
   
   kibana:    
-    image: docker.elastic.co/kibana/kibana:7.5.0
-    environment:
+    image: docker.elastic.co/kibana/kibana-oss:7.5.0
+    environment:      
       server.name: kibana
       server.host: 0
-      elasticsearch.url: http://elasticsearch:9200
-      elasticsearch.username: elastic
-      elasticsearch.password: changeme
-      xpack.monitoring.ui.container.elasticsearch.enabled: "true"      
+      elasticsearch.url: http://elasticsearch:9200      
+      xpack.monitoring.ui.container.elasticsearch.enabled: "true"
     depends_on:
       - elasticsearch    
     ports:
@@ -67,7 +63,7 @@ services:
       - log
   
   logstash:    
-    image: docker.elastic.co/logstash/logstash:7.5.0
+    image: docker.elastic.co/logstash/logstash-oss:7.5.0
     environment: 
       LS_JAVA_OPTS: -Xmx256m -Xms256m
     volumes:
@@ -82,12 +78,21 @@ services:
       - elasticsearch
   
   metricbeat:    
-    image: docker.elastic.co/beats/metricbeat:7.5.0
+    image: docker.elastic.co/beats/metricbeat-oss:7.5.0
     user: root
     volumes:
-      - ./config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
-      - /var/run/docker.sock:/var/run/docker.sock
+      # - ./config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+      # - /var/run/docker.sock:/var/run/docker.sock
+      - type: bind
+        source: ./config/metricbeat.yml
+        target: /usr/share/metricbeat/metricbeat.yml
+        read_only: true
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
     depends_on:
+      - rabbitmq
       - elasticsearch
       - kibana
     restart: on-failure

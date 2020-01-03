@@ -1,30 +1,45 @@
+# metricbeat.config.modules:
+#   path: ${path.config}/modules.d/*.yml
+#   reload.enabled: false
+
+# processors:
+# - add_cloud_metadata: ~
+# - add_docker_metadata: ~
+
+# output.elasticsearch:
+#   hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
+#   username: '${ELASTICSEARCH_USERNAME:}'
+#   password: '${ELASTICSEARCH_PASSWORD:}'
+
+
 metricbeat.modules:
-- module: docker
-  metricsets: ["container", "cpu", "diskio", "healthcheck", "info", "memory", "network"]
-  hosts: ["unix:///var/run/docker.sock"]
-  period: 10s
+  - module: docker
+    metricsets: ["container", "cpu", "diskio", "healthcheck", "info", "memory", "network"]
+    hosts: ["unix:///var/run/docker.sock"]
+    period: 10s
 
-- module: elasticsearch
-  metricsets: ["node", "node_stats"]
-  period: 10s
-  hosts: ["elasticsearch:9200"]  
+  - module: elasticsearch
+    metricsets: ["node", "node_stats"]
+    period: 10s
+    hosts: ["elasticsearch:9200"]
 
-- module: rabbitmq
-  metricsets: ["node", "queue"]
-  period: 10s
-  hosts: ["rabbitmq:15672"]
-  username: elastic
-  password: changeme
-
-
+  - module: rabbitmq
+    metricsets: ["node", "queue"]
+    period: 10s
+    hosts: ["rabbitmq:15672"]
+    username: elastic
+    password: changeme
+  
 output.elasticsearch:
   hosts: ["elasticsearch:9200"]
-  username: "elastic"
-  password: "changeme"
+  # X-Pack settings see https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-xpack.html
+  # username: "elastic"
+  # password: "changeme"
 
 setup.kibana:
-  host: "kibana:5601"  
-#  username: "elastic" 
-#  password: "changeme"  
+  host: "kibana:5601"
+  # X-Pack settings see https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-xpack.html
+  # username: "elastic"
+  # password: "changeme"
 
 setup.dashboards.enabled: true

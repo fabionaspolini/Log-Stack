@@ -1,0 +1,12 @@
+// postar json na fila do Rabbit
+// criar indice no Kibana
+
+{
+    "type": "MyException",
+    "message": "Test error",
+    "data": {
+        "user": 11,
+        "empresa": 1,
+        "host": "vm-001"
+    }
+}

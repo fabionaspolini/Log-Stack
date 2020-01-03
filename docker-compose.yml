@@ -1,0 +1,93 @@
+version: '3.4'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672" 
+    networks:
+      - log
+    environment:
+      RABBITMQ_DEFAULT_USER: elastic
+      RABBITMQ_DEFAULT_PASS: changeme
+      RABBITMQ_DEFAULT_VHOST: Enterprise Log
+  
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.5.0
+    environment: 
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+      cluster.name: "elastic_stack_logging"
+      node.name: "elastic_stack_logging_data"
+      discovery.type: single-node
+      discovery.zen.minimum_master_nodes: 1
+      transport.host: 127.0.0.1
+      network.host: 0.0.0.0
+      http.host: 0.0.0.0
+      http.cors.enabled: "true"
+      http.cors.allow-origin: "*"
+    volumes: 
+      - elasticsearch_data:/usr/share/elasticsearch/data      
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -I -s -L http://localhost:9200 || exit 1"]
+      interval: 30s
+      timeout: 20s
+      retries: 5     
+    networks:
+      - log
+  
+  kibana:    
+    image: docker.elastic.co/kibana/kibana-oss:7.5.0
+    environment:
+      server.name: kibana
+      server.host: 0
+      elasticsearch.url: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch    
+    ports:
+      - "5601:5601"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -I -s -L http://localhost:5601/ || exit 1"]
+      interval: 30s
+      timeout: 20s
+      retries: 5     
+    networks:
+      - log
+  
+  logstash:    
+    image: docker.elastic.co/logstash/logstash-oss:7.5.0
+    volumes:
+      - ./config/logstash.conf:/config/logstash.conf      
+    links:      
+      - elasticsearch:elasticsearch
+    networks:
+      - log    
+    command: logstash -f /config/logstash.conf  
+    depends_on:
+      - rabbitmq
+      - elasticsearch
+  
+  metricbeat:    
+    image: docker.elastic.co/beats/metricbeat-oss:7.5.0
+    user: root
+    volumes:
+      - ./config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - elasticsearch
+      - kibana
+    restart: on-failure
+    networks:
+      - log
+
+volumes:
+  rabbitmq_data:
+  elasticsearch_data:
+
+networks:
+  log:
+    driver: bridge

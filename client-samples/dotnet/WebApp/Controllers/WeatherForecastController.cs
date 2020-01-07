@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WebApp.Domain;
 
 namespace WebApp.Controllers
 {
@@ -17,10 +18,12 @@ namespace WebApp.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly CityService _cityService;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, CityService cityService)
         {
             _logger = logger;
+            _cityService = cityService;
         }
 
         [HttpGet]

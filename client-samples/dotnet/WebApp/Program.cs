@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 
 namespace WebApp
 {
@@ -24,17 +25,18 @@ namespace WebApp
                     .ConfigureLogging((ctx, builder) =>
                     {
                         builder.AddConfiguration(ctx.Configuration.GetSection("Logging"));
+                        builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                         
-                        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Development)
-                        {
-                            builder.ClearProviders();
-                            builder.AddConsole();
-                            builder.AddDebug();
-                        }
+                        // if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Development)
+                        // {
+                        //     builder.ClearProviders();
+                        //     builder.AddConsole();
+                        //     builder.AddDebug();
+                        // }
                         
                         // Microsoft Logging
-                        builder.AddConfiguration(ctx.Configuration.GetSection("Logging"));
-                        builder.AddFile(o => o.RootPath = ctx.HostingEnvironment.ContentRootPath);
-                    }));
+                        // builder.AddFile(o => o.RootPath = ctx.HostingEnvironment.ContentRootPath);
+                    })
+                    .UseNLog());
     }
 }

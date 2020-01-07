@@ -15,6 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Logs" />
+        <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 </Project>

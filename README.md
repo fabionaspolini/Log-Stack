@@ -25,7 +25,7 @@ Exemplo baseados nos projetos:
 ```json
 {
     "type": "Error",
-    "message": "Test error",
+    "message2": "Test error",
     "exception": {
         "class": "System.Exception",
         "stackTrace": "xxxxxxxx"

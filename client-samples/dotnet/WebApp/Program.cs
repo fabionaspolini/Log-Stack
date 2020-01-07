@@ -32,8 +32,9 @@ namespace WebApp
                             builder.AddDebug();
                         }
                         
+                        // Microsoft Logging
                         builder.AddConfiguration(ctx.Configuration.GetSection("Logging"));
-                        builder.AddFile(o => o.RootPath = Path.Combine(ctx.HostingEnvironment.ContentRootPath));
+                        builder.AddFile(o => o.RootPath = ctx.HostingEnvironment.ContentRootPath);
                     }));
     }
 }

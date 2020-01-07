@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace WebApp.Domain
@@ -12,7 +13,7 @@ namespace WebApp.Domain
             _logger = logger;
         }
 
-        public IEnumerable<City> GetAll()
+        public async Task<IEnumerable<City>> GetAll()
         {
             _logger.LogInformation("Obtendo todas as cidades");
             return new[]

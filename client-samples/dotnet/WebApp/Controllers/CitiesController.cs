@@ -22,7 +22,7 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<City> Get()
+        public Task<IEnumerable<City>> Get()
         {
             _logger.LogInformation("Obter todas as cidades");
             return _cityService.GetAll();

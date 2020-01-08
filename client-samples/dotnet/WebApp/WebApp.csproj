@@ -16,6 +16,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest" />
+      <Content Update="NLog.config">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
     </ItemGroup>
 </Project>

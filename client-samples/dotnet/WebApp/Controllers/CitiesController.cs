@@ -54,7 +54,7 @@ namespace WebApp.Controllers
             {
                 int.Parse("abc");
             }
-            catch (Exception e)
+            catch
             {
                 _logger.LogCritical("ERRO AO CONVERTER NUMERO!");
                 throw;

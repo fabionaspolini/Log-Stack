@@ -1,19 +1,5 @@
 version: '3.4'
-services:
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-    ports:
-      - "15672:15672"
-      - "5672:5672" 
-    networks:
-      - log
-    environment:
-      RABBITMQ_DEFAULT_USER: elastic
-      RABBITMQ_DEFAULT_PASS: changeme
-      RABBITMQ_DEFAULT_VHOST: Enterprise Log
-  
+services:    
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.5.0
     environment: 
@@ -76,21 +62,27 @@ services:
     depends_on:
       - rabbitmq
       - elasticsearch
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - log
+    environment:
+      RABBITMQ_DEFAULT_USER: elastic
+      RABBITMQ_DEFAULT_PASS: changeme
+      RABBITMQ_DEFAULT_VHOST: Enterprise Log
   
   metricbeat:    
     image: docker.elastic.co/beats/metricbeat-oss:7.5.0
     user: root
     volumes:
-      # - ./config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
-      # - /var/run/docker.sock:/var/run/docker.sock
-      - type: bind
-        source: ./config/metricbeat.yml
-        target: /usr/share/metricbeat/metricbeat.yml
-        read_only: true
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
-        read_only: true
+       - ./config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+       - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
       - rabbitmq
       - elasticsearch

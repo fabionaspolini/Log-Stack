@@ -27,5 +27,38 @@ namespace WebApp.Controllers
             _logger.LogInformation("Obter todas as cidades");
             return _cityService.GetAll();
         }
+
+        [HttpGet("CustomError")]
+        public void CustomError()
+        {
+            try
+            {
+                int.Parse("abc");
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Teste erro conversão número", e);
+            }
+        }
+
+        [HttpGet("Error")]
+        public void Error()
+        {
+            int.Parse("abc");
+        }
+        
+        [HttpGet("Fatal")]
+        public void Fatal()
+        {
+            try
+            {
+                int.Parse("abc");
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical("ERRO AO CONVERTER NUMERO!");
+                throw;
+            }
+        }
     }
 }

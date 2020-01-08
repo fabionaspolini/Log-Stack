@@ -13,7 +13,9 @@ namespace WebApp.Domain
             _logger = logger;
         }
 
+#pragma warning disable 1998
         public async Task<IEnumerable<City>> GetAll()
+#pragma warning restore 1998
         {
             _logger.LogInformation("Obtendo todas as cidades");
             return new[]

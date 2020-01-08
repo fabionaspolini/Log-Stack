@@ -10,14 +10,6 @@ namespace ConsoleApp
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            
-            // ILoggerFactory loggerFactory = new LoggerFactory()
-            //     .AddProvider(new ConsoleLoggerProvider())
-            //     .AddConsole()
-            //     .AddDebug();
-            // ILogger logger = loggerFactory.CreateLogger<Program>();
-            // logger.LogInformation(
-            //     "This is a test of the emergency broadcast system.");
         }
     }
 }

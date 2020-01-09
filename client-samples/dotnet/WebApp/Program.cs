@@ -25,7 +25,7 @@ namespace WebApp
                     .ConfigureLogging((ctx, builder) =>
                     {
                         builder.AddConfiguration(ctx.Configuration.GetSection("Logging"));
-                        // builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                        builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                         
                         // Microsoft Logging
                         // if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Development)

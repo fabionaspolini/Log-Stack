@@ -14,12 +14,8 @@ namespace ConsoleApp
             Console.WriteLine("Hello World!");
             
             var services = new ServiceCollection();
-            services.AddLogging();
+            services.AddLogging(builder => { builder.AddNLog("NLog.config"); });
             var provider = services.BuildServiceProvider();
-            
-            var factory = provider.GetService<ILoggerFactory>();
-            factory.AddNLog();
-            factory.ConfigureNLog("NLog.config");
 
             var logger = provider.GetService<ILogger<Program>>();
             logger.LogWarning("hello nlog warn");
